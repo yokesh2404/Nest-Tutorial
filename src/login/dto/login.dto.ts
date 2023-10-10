@@ -9,3 +9,9 @@ export interface RegisterDto{
   name:string,
   age:number
 }
+
+export interface UserUpdateDto{
+  email: string,
+  name:string,
+  age:number
+}
