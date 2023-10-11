@@ -10,14 +10,19 @@ import HandleResponse from 'src/utils/handle_response';
 export class LoginService {
   constructor(@InjectModel('Auth') private registerModel: Model<Register>) {}
 
-  async getId(): Promise<string> {
-    return 'login by service';
+  async getUserById(id: string): Promise<any> {
+    const user = await this.registerModel.findById(id).exec();
+    if (user === null || user === undefined || user.id !== id) {
+      return HandleResponse.failureObj(401, 'user not found');
+    }
+
+    return HandleResponse.buildSuccessObj(200, 'Success', user);
   }
 
   async createUser(data: RegisterDto): Promise<Register> {
     const user = new this.registerModel(data);
     user.save();
-    return HandleResponse.buildSuccessObj(200, 'User Created');
+    return HandleResponse.buildSuccessObj(200, 'User Created', user);
   }
 
   async findUser(userId: string, password: string): Promise<any> {
@@ -38,5 +43,24 @@ export class LoginService {
     }
 
     return HandleResponse.buildSuccessObj(200, 'Success', user);
+  }
+
+  async deleteUser(id: string): Promise<any> {
+    const user = await this.registerModel.findByIdAndDelete({ _id: id }).exec();
+    if (user === null || user === undefined || user.id !== id) {
+      return HandleResponse.failureObj(401, 'user not found');
+    }
+
+    return HandleResponse.buildSuccessObj(200, 'Success', user);
+  }
+
+  async deleteAllUser(): Promise<any> {
+    const user = await this.registerModel.deleteMany().exec();
+    return HandleResponse.buildSuccessObj(200, 'Record Deleted Successfully');
+  }
+
+  async getAllUser(): Promise<any> {
+    const users = await this.registerModel.find().exec();
+    return HandleResponse.buildSuccessObj(200, 'Success', users);
   }
 }

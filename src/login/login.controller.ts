@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Register } from './interface/login.interface';
 import { LoginDto, RegisterDto, UserUpdateDto } from './dto/login.dto';
@@ -7,9 +15,9 @@ import { LoginDto, RegisterDto, UserUpdateDto } from './dto/login.dto';
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
-  @Get()
-  async getId(): Promise<String> {
-    return await this.loginService.getId();
+  @Get('user-details/:id')
+  async getUserById(@Param('id') id: string): Promise<any> {
+    return await this.loginService.getUserById(id);
   }
 
   @Post('register')
@@ -25,5 +33,20 @@ export class LoginController {
   @Patch('update')
   async updateUser(@Body() data: UserUpdateDto): Promise<any> {
     return await this.loginService.updateUser(data);
+  }
+
+  @Get('all-users')
+  async getAllUser(): Promise<any> {
+    return await this.loginService.getAllUser();
+  }
+
+  @Delete('delete-user/:id')
+  async deleteUser(@Param('id') id: string): Promise<any> {
+    return await this.loginService.deleteUser(id);
+  }
+
+  @Delete('deleteAllUser')
+  async deleteAllUser(): Promise<any> {
+    return await this.loginService.deleteAllUser();
   }
 }
